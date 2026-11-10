@@ -1,0 +1,1504 @@
+:root {
+  --page: #000;
+  --card: #0a0a0a;
+  --raised: #141414;
+  --hover: #1c1c1c;
+  --text: #f5f5f5;
+  --text2: #a3a3a3;
+  --text3: #808080;
+  --hair: rgb(255 255 255 / 0.08);
+  --hair2: rgb(255 255 255 / 0.16);
+  --negative: #e5484d;
+
+  /* One colour per step, and one for the advisor, at the same lightness and strength so none leads. */
+  --plan: oklch(0.76 0.12 250);
+  --build: oklch(0.81 0.13 72);
+  --review: oklch(0.79 0.12 168);
+  --out: #f5f5f5;
+  --advisor: oklch(0.78 0.12 330);
+
+  --sans: -apple-system, BlinkMacSystemFont, "Inter Variable", "Segoe UI", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --gap: 24px;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text);
+  font: 14px/20px var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p,
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+h2 {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.hint {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text3);
+}
+
+.error {
+  font-size: 13px;
+  color: var(--negative);
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.logo {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--text);
+}
+
+img.logo {
+  object-fit: contain;
+}
+
+/* Shell */
+
+.app {
+  min-height: 100dvh;
+  max-width: 1520px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.bar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wordmark {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.mascot {
+  width: 28px;
+  height: 14px;
+  flex: none;
+}
+
+/* On load the logo looks down at Plan, across at Build, and comes to rest looking at Review. It plays once.
+   The two offsets are where Plan and Build sit on the way from the logo to Review, as gaze() in Line.tsx
+   works out for the work item during a preview. */
+@media (prefers-reduced-motion: no-preference) {
+  .wordmark .eyes {
+    animation: look 2200ms var(--ease) 400ms both;
+  }
+}
+
+@keyframes look {
+  0%,
+  81%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  9%,
+  36% {
+    transform: translate(-4.9px, 1.6px);
+  }
+
+  45%,
+  72% {
+    transform: translate(-2.4px, 0.8px);
+  }
+}
+
+main {
+  flex: 1;
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+footer {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text3);
+}
+
+footer a {
+  color: var(--text2);
+}
+
+footer a:hover {
+  color: var(--text);
+}
+
+/* Controls */
+
+.btn {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  background: var(--raised);
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition: background-color 120ms var(--ease);
+}
+
+.btn:hover {
+  background: var(--hover);
+}
+
+.btn.quiet {
+  background: transparent;
+}
+
+.btn.quiet:hover {
+  background: var(--raised);
+}
+
+.btn.primary {
+  background: var(--text);
+  border-color: transparent;
+  color: #000;
+  font-weight: 500;
+}
+
+.btn.primary:hover {
+  background: #fff;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.ghost {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text3);
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+
+.ghost:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+input:not([type="file"]),
+select {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  background: var(--raised);
+  min-width: 0;
+}
+
+select {
+  appearance: none;
+  padding-right: 28px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23808080' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+}
+
+.name-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* A visible edge, so the name reads as something you can type in. */
+.bar .recipe-name {
+  width: 220px;
+  background: transparent;
+  font-weight: 500;
+}
+
+.bar .recipe-name:hover,
+.bar .recipe-name:focus {
+  background: var(--raised);
+}
+
+.file-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.bar .starters {
+  border-color: transparent;
+  background-color: transparent;
+  color: var(--text2);
+  font-size: 13px;
+}
+
+/* One tooltip element, placed beside its target by Tooltip.tsx. */
+
+.tooltip {
+  position: fixed;
+  z-index: 10;
+  width: max-content;
+  max-width: min(280px, calc(100vw - 16px));
+  padding: 8px 12px;
+  border: 1px solid var(--hair2);
+  border-radius: 8px;
+  background: var(--raised);
+  color: var(--text2);
+  font-size: 12px;
+  line-height: 16px;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+
+/* The line */
+
+.line {
+  display: grid;
+  gap: 8px;
+}
+
+.stations,
+.segs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--gap);
+}
+
+.station {
+  min-width: 0;
+  /* Room for one model and the button that adds another, so picking a model does not move the page. */
+  min-height: 216px;
+  padding: 16px;
+  border: 1px solid var(--hair);
+  border-radius: 12px;
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition:
+    box-shadow 200ms var(--ease),
+    border-color 120ms var(--ease);
+}
+
+/* A station lights up in its phase colour once it has something to do. */
+.station.lit {
+  background: linear-gradient(to bottom, color-mix(in oklch, var(--hue) 7%, var(--card)), var(--card) 56px);
+  box-shadow: inset 0 2px 0 var(--hue);
+}
+
+.station.over {
+  border-color: var(--hair2);
+}
+
+/* The advisor serves all three steps, so it is one strip beneath them, and Out stands beside both. */
+.rail {
+  grid-column: 1 / -1;
+  min-width: 0;
+  min-height: 36px;
+  padding: 4px 8px 4px 16px;
+  border: 1px dashed var(--hair);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 13px;
+  transition: border-color 120ms var(--ease);
+}
+
+/* Like a step, the strip lights up in its own colour once it has a model. */
+.rail.lit {
+  --hue: var(--advisor);
+  border-style: solid;
+  background: linear-gradient(to bottom, color-mix(in oklch, var(--hue) 7%, var(--card)), var(--card));
+  box-shadow: inset 0 2px 0 var(--hue);
+}
+
+.rail.over {
+  border-color: var(--hair2);
+}
+
+.rail .info {
+  margin-left: -8px;
+}
+
+.rail .meta {
+  grid-column: auto;
+}
+
+.rail .place {
+  height: 26px;
+  padding: 0 12px;
+}
+
+.rail .step button {
+  width: 24px;
+  height: 24px;
+}
+
+.asks {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text2);
+}
+
+@media (min-width: 1040px) {
+  .stations {
+    row-gap: 8px;
+  }
+
+  .station.out {
+    grid-column: 4;
+    grid-row: 1 / span 2;
+  }
+
+  .rail {
+    grid-column: 1 / span 3;
+    grid-row: 2;
+  }
+}
+
+.station header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.station h2 {
+  flex: 1;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text3);
+}
+
+.lit .dot {
+  background: var(--hue);
+}
+
+.idx {
+  font-size: 12px;
+  color: var(--text3);
+}
+
+.slots {
+  display: grid;
+  gap: 4px;
+}
+
+.chip {
+  min-width: 0;
+  padding: 8px 8px 8px 12px;
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  background: var(--raised);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 8px;
+  align-items: center;
+}
+
+.who {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 4px;
+}
+
+.name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flag {
+  font-size: 12px;
+  color: var(--text3);
+  flex: none;
+}
+
+.acts {
+  display: flex;
+}
+
+.meta {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text2);
+}
+
+.meta select {
+  height: 24px;
+  padding: 0 24px 0 8px;
+  border-radius: 6px;
+  background-color: var(--card);
+  background-position: right 4px center;
+}
+
+.empty {
+  color: var(--text3);
+  font-size: 13px;
+}
+
+.place {
+  height: 40px;
+  border: 1px dashed var(--hair2);
+  border-radius: 8px;
+  background: none;
+  color: var(--text2);
+  font-size: 13px;
+}
+
+.place:hover {
+  background: var(--raised);
+  color: var(--text);
+}
+
+.note {
+  margin-top: auto;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text3);
+}
+
+.files {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text2);
+  overflow-wrap: anywhere;
+}
+
+.out-actions {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.out-actions .btn {
+  flex: 1 1 auto;
+  justify-content: center;
+  padding: 0 8px;
+}
+
+/* The belt under the stations */
+
+.track {
+  position: relative;
+  height: 40px;
+}
+
+.segs {
+  position: absolute;
+  inset: 11px 0 auto;
+}
+
+.seg {
+  height: 2px;
+  border-radius: 1px;
+  background: var(--hair2);
+  transition: background-color 200ms var(--ease);
+}
+
+.seg.lit {
+  background: color-mix(in oklch, var(--hue) 70%, transparent);
+}
+
+.link {
+  --column: calc((100% - 3 * var(--gap)) / 4);
+  position: absolute;
+  top: 12px;
+  width: var(--gap);
+  border-top: 1px solid var(--hair2);
+}
+
+.link.one {
+  left: var(--column);
+}
+
+.link.two {
+  left: calc(2 * var(--column) + var(--gap));
+}
+
+.link.three {
+  left: calc(3 * var(--column) + 2 * var(--gap));
+}
+
+.link.fresh {
+  border-top: 1px dashed var(--text3);
+}
+
+.gate {
+  position: absolute;
+  top: 4px;
+  left: calc((100% - 3 * var(--gap)) / 4 + var(--gap) / 2);
+  width: 0;
+}
+
+.gate i {
+  position: absolute;
+  left: -1px;
+  width: 2px;
+  height: 16px;
+  border-radius: 1px;
+  background: var(--text);
+}
+
+.gate b {
+  position: absolute;
+  top: 20px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text2);
+}
+
+/* The work item rests at the start of the line and moves only during a run. */
+.item {
+  position: absolute;
+  top: 5px;
+  left: calc((100% - 3 * var(--gap)) / 8 - 14px);
+  width: 28px;
+  height: 14px;
+  border-radius: 7px;
+  background: var(--text3);
+  box-shadow: 0 0 0 3px var(--page);
+}
+
+/* The same two eyes as the mascot beside the name. */
+.item i {
+  position: absolute;
+  top: 5px;
+  left: 16px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--page);
+}
+
+.item i + i {
+  left: 21px;
+}
+
+.trackbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.readout {
+  font-size: 12px;
+  color: var(--text2);
+}
+
+.key {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text3);
+}
+
+.key i {
+  width: 16px;
+  border-top: 1px solid var(--hair2);
+}
+
+.key i.fresh {
+  border-top: 1px dashed var(--text3);
+}
+
+.notes {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text2);
+}
+
+.notes li {
+  padding-left: 12px;
+  border-left: 1px solid var(--hair2);
+}
+
+/* Shelf and rules */
+
+.bench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--gap);
+  align-items: start;
+}
+
+.panel {
+  padding: 16px;
+  border: 1px solid var(--hair);
+  border-radius: 12px;
+  background: var(--card);
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.panel header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.panel h2 {
+  flex: 1;
+}
+
+.panel h3 {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+  color: var(--text2);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+}
+
+.maker {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text2);
+}
+
+.models .hint {
+  margin-left: auto;
+  align-self: center;
+}
+
+.models {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.pair {
+  display: inline-flex;
+  align-items: center;
+}
+
+.model {
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--hair);
+  border-radius: 6px;
+  background: var(--raised);
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition: background-color 120ms var(--ease);
+}
+
+.model:hover {
+  background: var(--hover);
+}
+
+.model[draggable="true"] {
+  cursor: grab;
+}
+
+.model.picked {
+  border-color: var(--text);
+}
+
+.model[aria-disabled="true"] {
+  color: var(--text3);
+  cursor: default;
+  background: transparent;
+}
+
+/* A skill every recipe generates: shown, but not something to add or remove. */
+.model.builtin {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text2);
+  cursor: default;
+}
+
+.model.add {
+  border-style: dashed;
+  border-color: var(--hair2);
+  background: transparent;
+  color: var(--text2);
+}
+
+.model.add:hover {
+  background: var(--raised);
+  color: var(--text);
+}
+
+.model img,
+.model .logo {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+}
+
+.rule {
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.rule .label {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.info {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text3);
+  display: grid;
+  place-items: center;
+  cursor: help;
+}
+
+.step {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  background: var(--raised);
+}
+
+.step button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--text2);
+  display: grid;
+  place-items: center;
+}
+
+.step button:hover:not(:disabled) {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.step button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.step output {
+  min-width: 28px;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* Dialogs */
+
+dialog {
+  width: min(440px, calc(100vw - 32px));
+  padding: 0;
+  border: 1px solid var(--hair2);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--text);
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.7);
+}
+
+.sheet {
+  padding: 20px;
+  display: grid;
+  gap: 12px;
+}
+
+.sheet label {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text2);
+}
+
+.sheet label input,
+.sheet label select {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.pair-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-actions {
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* The install steps */
+
+dialog.install {
+  width: min(560px, calc(100vw - 32px));
+}
+
+.install .sheet {
+  --pad: 24px;
+  padding: var(--pad);
+  gap: 24px;
+}
+
+.install header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* The icon sits level with the middle of the title and the line under it. */
+.install header img {
+  margin-top: 4px;
+  flex: none;
+}
+
+.install header div {
+  flex: 1;
+  display: grid;
+  gap: 4px;
+}
+
+.install h2 {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* One secondary role for every caption, label and note in the sheet. */
+.install p,
+.install legend,
+.install footer,
+.needs h3 {
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+  color: var(--text2);
+}
+
+.choice {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.choice legend {
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.sheet .options label {
+  padding: 12px;
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    background-color 120ms var(--ease),
+    border-color 120ms var(--ease);
+}
+
+.sheet .options label:hover,
+.sheet .options label:has(:checked) {
+  background: var(--raised);
+}
+
+.sheet .options label:has(:checked) {
+  border-color: var(--hair2);
+}
+
+.sheet .options label:has(:focus-visible) {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.options input {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin: 2px 0 0;
+  padding: 0;
+  border: 1px solid var(--hair2);
+  border-radius: 50%;
+  background: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.options input:checked {
+  border-color: var(--text);
+  background: var(--text);
+  box-shadow: inset 0 0 0 3px var(--raised);
+}
+
+.options small {
+  margin-top: 4px;
+  display: block;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text2);
+}
+
+/* Steps are numbered the way the steps of the line are. */
+.steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  display: grid;
+  gap: 16px;
+}
+
+.steps li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+}
+
+.steps li::before {
+  content: counter(step, decimal-leading-zero);
+  font: 12px/20px var(--mono);
+  color: var(--text3);
+}
+
+.steps li > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+}
+
+.steps h3 {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+/* The one note a reader must not skip gets the primary text colour and a rule beside it. */
+.steps .caveat,
+.card .caveat {
+  margin-top: 4px;
+  padding-left: 12px;
+  border-left: 1px solid var(--hair2);
+  color: var(--text);
+}
+
+kbd {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  border: 1px solid var(--hair2);
+  border-radius: 4px;
+  background: var(--raised);
+  font: 12px/18px var(--mono);
+  color: var(--text);
+  display: inline-block;
+  text-align: center;
+}
+
+.command {
+  margin: 4px 0;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.command input {
+  flex: 1;
+  height: auto;
+  min-height: 32px;
+  font-size: 12px;
+  color: var(--text2);
+  text-overflow: ellipsis;
+}
+
+/* Wide enough for both labels, so the field beside it keeps its width. */
+.command .btn {
+  min-width: 120px;
+  justify-content: center;
+}
+
+.needs {
+  display: grid;
+  gap: 8px;
+}
+
+.needs .card {
+  padding: 12px;
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+}
+
+.sheet .card label {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.card small {
+  margin-top: 4px;
+  display: block;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text2);
+}
+
+.card input {
+  appearance: none;
+  flex: none;
+  width: 28px;
+  height: 16px;
+  margin: 2px 0 0;
+  padding: 0;
+  border: 1px solid var(--hair2);
+  border-radius: 8px;
+  background: none;
+  position: relative;
+  cursor: pointer;
+  transition:
+    background-color 120ms var(--ease),
+    border-color 120ms var(--ease);
+}
+
+.card input::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text3);
+  transition:
+    transform 120ms var(--ease),
+    background-color 120ms var(--ease);
+}
+
+.card input:checked {
+  border-color: var(--text);
+  background: var(--text);
+}
+
+.card input:checked::before {
+  background: #000;
+  transform: translateX(12px);
+}
+
+/* The notes at the foot of the sheet: rows that run edge to edge and open one at a time. */
+.more {
+  margin: 0 calc(-1 * var(--pad)) -8px;
+}
+
+.more details,
+.more footer {
+  padding: 0 var(--pad);
+  border-top: 1px solid var(--hair);
+}
+
+.more summary {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text);
+  list-style: none;
+  cursor: pointer;
+  outline-offset: -2px;
+}
+
+.more summary::-webkit-details-marker {
+  display: none;
+}
+
+.more summary .icon {
+  color: var(--text3);
+  transition: transform 120ms var(--ease);
+}
+
+.more details[open] summary .icon {
+  transform: rotate(180deg);
+}
+
+.more dl {
+  margin: 0 0 12px;
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.more dt,
+.more dd {
+  margin: 0;
+  padding: 8px 0;
+  border-top: 1px solid var(--hair);
+}
+
+.more dt {
+  color: var(--text3);
+}
+
+.more dd {
+  color: var(--text2);
+  overflow-wrap: anywhere;
+}
+
+.more dd.lines {
+  display: grid;
+}
+
+/* File names, addresses and options are the facts in each row, so they read brightest. */
+.more dd .mono,
+.more code {
+  font: 12px/20px var(--mono);
+  color: var(--text);
+}
+
+.install .more footer {
+  padding-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.text-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* The generated files open as a sheet over the lower part of the page. */
+dialog.drawer {
+  width: 100%;
+  max-width: none;
+  height: min(72dvh, 720px);
+  max-height: none;
+  margin: auto 0 0;
+  border-width: 1px 0 0;
+  border-radius: 12px 12px 0 0;
+}
+
+.drawer .sheet {
+  height: 100%;
+  max-width: 1520px;
+  margin: 0 auto;
+  padding: 16px 24px 0;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.drawer header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.viewer {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: var(--gap);
+}
+
+.viewer ul {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  font-size: 12px;
+}
+
+.viewer ul button {
+  width: 100%;
+  min-height: 32px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text2);
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.viewer ul button:hover,
+.viewer ul button[aria-current="true"] {
+  background: var(--raised);
+  color: var(--text);
+}
+
+.viewer pre {
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--hair);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: var(--page);
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--text2);
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Narrower screens: the belt needs four columns, so it steps aside. */
+
+@media (max-width: 1039px) {
+  .stations {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Two columns: Out stands beside Review, and the advisor's strip runs under both rows. */
+  .rail {
+    order: 1;
+  }
+
+  /* The belt is not shown at this width, so neither is the button that plays along it, nor its key. */
+  .track,
+  .key,
+  .trackbar .btn {
+    display: none;
+  }
+
+  .bench {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 639px) {
+  :root {
+    --gap: 12px;
+  }
+
+  /* One column: the steps, then the advisor, and Out last. */
+  .rail {
+    order: 0;
+  }
+
+  .app {
+    padding: 0 16px;
+  }
+
+  .bar {
+    height: auto;
+    padding: 12px 0;
+    flex-wrap: wrap;
+  }
+
+  .name-field {
+    flex: 1 0 100%;
+  }
+
+  .bar .recipe-name {
+    flex: 1;
+    width: auto;
+  }
+
+  .file-name {
+    flex: 1 0 100%;
+  }
+
+  .stations {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .station {
+    min-height: 0;
+  }
+
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+
+  .model,
+  .place,
+  .btn {
+    min-height: 40px;
+  }
+
+  .install .sheet {
+    --pad: 20px;
+  }
+
+  .ghost,
+  .info,
+  .step button,
+  .rail .step button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .viewer {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .viewer ul {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .viewer ul button {
+    white-space: nowrap;
+  }
+
+  footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}

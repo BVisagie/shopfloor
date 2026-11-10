@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bvisagie.github.io/shopfloor/recipe.schema.json",
+  "title": "shopfloor recipe",
+  "description": "Which models plan, build and review, the limits agents work within, and the skills they use.",
+  "type": "object",
+  "required": ["version", "name", "phases", "limits"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "const": 1 },
+    "name": { "$ref": "#/$defs/line", "maxLength": 60 },
+    "phases": {
+      "description": "Models allowed in each phase, preferred first. Every phase needs at least one.",
+      "type": "object",
+      "required": ["plan", "build", "review"],
+      "additionalProperties": false,
+      "properties": {
+        "plan": { "$ref": "#/$defs/lane" },
+        "build": { "$ref": "#/$defs/lane" },
+        "review": { "$ref": "#/$defs/lane" }
+      }
+    },
+    "advisor": {
+      "description": "Optional. A model the others ask for a second opinion. It reads and answers, and never edits.",
+      "type": "object",
+      "required": ["instanceId", "model"],
+      "additionalProperties": false,
+      "properties": {
+        "instanceId": { "$ref": "#/$defs/id" },
+        "model": { "$ref": "#/$defs/id" },
+        "options": { "$ref": "#/$defs/options" },
+        "maxCalls": {
+          "description": "The most times it may be asked during one task. 3 when left out.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "required": ["maxSubagents", "maxReviewRounds"],
+      "additionalProperties": false,
+      "properties": {
+        "maxSubagents": {
+          "description": "The most subagents a thread may run at the same time.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16
+        },
+        "maxReviewRounds": {
+          "description": "A ceiling on reviewer runs. Review ends as soon as every reviewer approves.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        }
+      }
+    },
+    "skills": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "required": ["name", "repo", "when"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$" },
+          "repo": { "type": "string", "pattern": "^https://github\\.com/[\\w.-]+/[\\w.-]+$" },
+          "when": {
+            "description": "Completes the sentence \"Use the skill ...\", for example \"on every coding task\".",
+            "$ref": "#/$defs/line",
+            "maxLength": 120
+          }
+        }
+      }
+    },
+    "models": {
+      "description": "Models added to the shelf by hand.",
+      "type": "array",
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "required": ["maker", "name", "instanceId", "model"],
+        "additionalProperties": false,
+        "properties": {
+          "maker": { "enum": ["anthropic", "openai", "google", "meta", "xai", "other"] },
+          "name": { "$ref": "#/$defs/line", "maxLength": 40 },
+          "instanceId": { "$ref": "#/$defs/id" },
+          "model": { "$ref": "#/$defs/id" },
+          "options": { "$ref": "#/$defs/options" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "line": { "type": "string", "minLength": 1, "pattern": "^[^\\u0000-\\u001f\\u007f]+$" },
+    "id": { "type": "string", "pattern": "^[\\w.:/@+-]{1,100}$" },
+    "options": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[A-Za-z_]\\w{0,39}$" },
+      "additionalProperties": {
+        "oneOf": [{ "type": "boolean" }, { "type": "string", "pattern": "^[\\w.:+-]{1,40}$" }]
+      }
+    },
+    "lane": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {
+        "description": "A model as T3 Code names it.",
+        "type": "object",
+        "required": ["instanceId", "model"],
+        "additionalProperties": false,
+        "properties": {
+          "instanceId": { "$ref": "#/$defs/id" },
+          "model": { "$ref": "#/$defs/id" },
+          "options": { "$ref": "#/$defs/options" }
+        }
+      }
+    }
+  }
+}
