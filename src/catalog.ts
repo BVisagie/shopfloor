@@ -76,6 +76,7 @@ const codex: Effort = {
   default: "high",
 };
 const antigravity: Effort = { option: "thinking_level", values: ["low", "medium", "high"], default: "high" };
+const argon: Effort = { ...antigravity, values: ["minimal", "low", "medium", "high"] };
 const muse: Effort = {
   option: "reasoningEffort",
   values: ["low", "medium", "high", "xhigh", "max"],
@@ -98,8 +99,8 @@ export const MODELS: readonly CatalogModel[] = [
   { maker: "openai", name: "GPT-6.1 Sol", instanceId: "codex", model: "gpt-6.1-sol", effort: codex },
   { maker: "openai", name: "GPT-6 Astra", instanceId: "codex", model: "gpt-6-astra", effort: codex },
   { maker: "openai", name: "GPT-6 Luna", instanceId: "codex", model: "gpt-6-luna", effort: codex },
-  { maker: "google", name: "Gemini 4 Carbon", instanceId: "antigravity", model: "gemini-4-carbon" },
-  { maker: "google", name: "Gemini 4 Argon", instanceId: "antigravity", model: "gemini-4-argon", effort: antigravity },
+  { maker: "google", name: "Gemini 4 Carbon", instanceId: "antigravity", model: "gemini-4-carbon", effort: antigravity },
+  { maker: "google", name: "Gemini 4 Argon", instanceId: "antigravity", model: "gemini-4-argon", effort: argon },
   { maker: "google", name: "Gemini 3.8 Flash", instanceId: "antigravity", model: "gemini-3.8-flash", effort: antigravity },
   { maker: "meta", name: "Muse Wonder Full", instanceId: "muse", model: "muse-wonder-full-1.0", effort: muse },
   { maker: "meta", name: "Muse Wonder", instanceId: "muse", model: "muse-wonder-1.0", effort: muse },
