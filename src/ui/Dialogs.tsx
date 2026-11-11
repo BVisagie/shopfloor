@@ -27,6 +27,28 @@ function Modal(props: { label: string; className?: string; onClose(): void; chil
   );
 }
 
+// Each copy shows its result for a moment and then the button resets, so copying again confirms again.
+function useCopy() {
+  const [result, setResult] = useState<{ text: string; ok: boolean } | null>(null);
+  const timer = useRef(0);
+  useEffect(() => () => clearTimeout(timer.current), []);
+  const show = (text: string, ok: boolean) => {
+    clearTimeout(timer.current);
+    setResult({ text, ok });
+    timer.current = window.setTimeout(() => setResult(null), 2000);
+  };
+  const copy = (text: string) => {
+    // The clipboard is missing on a page that is not served securely, and the browser can refuse it.
+    (navigator.clipboard?.writeText(text) ?? Promise.reject()).then(
+      () => show(text, true),
+      () => show(text, false),
+    );
+  };
+  // A result belongs to the text that was copied, so it is gone once the text changes.
+  const status = (text: string) => (result?.text === text ? (result.ok ? "copied" : "failed") : "idle");
+  return { copy, status };
+}
+
 const field = (form: FormData, name: string) => String(form.get(name) ?? "").trim();
 const message = (error: unknown) => (error instanceof Error ? error.message : String(error));
 
@@ -171,23 +193,18 @@ export function AddSkillDialog(props: { recipe: Recipe; onAdd(skill: Skill): voi
 export function FilesDialog(props: { files: OutputFile[]; onDownload(): void; onClose(): void }) {
   const { files } = props;
   const [path, setPath] = useState("rules.md");
-  const [copied, setCopied] = useState("");
+  const { copy, status } = useCopy();
   const file = files.find((candidate) => candidate.path === path) ?? files[0];
   if (!file) return null;
-  const copy = () => {
-    navigator.clipboard.writeText(file.content).then(
-      () => setCopied(file.path),
-      () => setCopied(""),
-    );
-  };
+  const copied = status(file.content);
   return (
     <Modal label="Generated files" className="drawer" onClose={props.onClose}>
       <div className="sheet">
         <header>
           <h2>Files</h2>
           <span className="spacer" />
-          <button className="btn" onClick={copy}>
-            {copied === file.path ? "Copied" : "Copy"}
+          <button className="btn" aria-live="polite" onClick={() => copy(file.content)}>
+            {copied === "copied" ? "Copied" : copied === "failed" ? "Copy failed" : "Copy"}
           </button>
           <button className="btn primary" onClick={props.onDownload}>
             Download
@@ -240,7 +257,7 @@ export function InstallDialog(props: { recipe: Recipe; onDownload(): void; onClo
   // A line whose agents have no machine-wide rules file can only be installed into a project.
   const [mode, setMode] = useState<InstallMode>(() => (installTargets(recipe).length > 0 ? "machine" : "project"));
   const [packed, setPacked] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+  const { copy, status } = useCopy();
   // A recipe someone else made can name any repository, and View files does not show what is in it.
   // So only the skills this site lists are downloaded without being asked for.
   const unlisted = recipe.skills.filter((skill) => !KNOWN_SKILLS.some((known) => known.name === skill.name && known.repo === skill.repo));
@@ -258,12 +275,7 @@ export function InstallDialog(props: { recipe: Recipe; onDownload(): void; onClo
   }, [recipe]);
 
   const command = packed === null ? "" : installCommand(packed, mode, withSkills);
-  const copy = () => {
-    navigator.clipboard.writeText(command).then(
-      () => setCopied(true),
-      () => setCopied(false),
-    );
-  };
+  const copied = status(command);
 
   return (
     <Modal label="Install in T3 Code" className="install" onClose={props.onClose}>
@@ -287,10 +299,7 @@ export function InstallDialog(props: { recipe: Recipe; onDownload(): void; onClo
                   type="radio"
                   name="mode"
                   checked={mode === each}
-                  onChange={() => {
-                    setMode(each);
-                    setCopied(false);
-                  }}
+                  onChange={() => setMode(each)}
                 />
                 <span>
                   {MODES[each].label}
@@ -319,10 +328,7 @@ export function InstallDialog(props: { recipe: Recipe; onDownload(): void; onClo
                   type="checkbox"
                   role="switch"
                   checked={wanted}
-                  onChange={(event) => {
-                    setWanted(event.currentTarget.checked);
-                    setCopied(false);
-                  }}
+                  onChange={(event) => setWanted(event.currentTarget.checked)}
                 />
               </label>
               <div className="models">
@@ -368,12 +374,14 @@ export function InstallDialog(props: { recipe: Recipe; onDownload(): void; onClo
                   value={command || "Preparing the command"}
                   onFocus={(event) => event.currentTarget.select()}
                 />
-                <button className="btn primary" disabled={command === ""} onClick={copy}>
-                  {copied ? (
+                <button className="btn primary" aria-live="polite" disabled={command === ""} onClick={() => copy(command)}>
+                  {copied === "copied" ? (
                     <>
                       <Icon name="check" />
                       Copied
                     </>
+                  ) : copied === "failed" ? (
+                    "Copy failed"
                   ) : (
                     "Copy command"
                   )}
