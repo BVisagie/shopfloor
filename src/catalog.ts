@@ -82,6 +82,8 @@ const muse: Effort = {
   values: ["low", "medium", "high", "xhigh", "max"],
   default: "high",
 };
+/** Muse Spark's contributor version, which T3 Code uses in contributor mode, has no max. */
+const museSpark: Effort = { ...muse, values: ["low", "medium", "high", "xhigh"] };
 const cursor: Effort = {
   option: "reasoning_effort",
   values: ["low", "medium", "high", "xhigh"],
@@ -104,7 +106,7 @@ export const MODELS: readonly CatalogModel[] = [
   { maker: "google", name: "Gemini 3.8 Flash", instanceId: "antigravity", model: "gemini-3.8-flash", effort: antigravity },
   { maker: "meta", name: "Muse Wonder Full", instanceId: "muse", model: "muse-wonder-full-1.0", effort: muse },
   { maker: "meta", name: "Muse Wonder", instanceId: "muse", model: "muse-wonder-1.0", effort: muse },
-  { maker: "meta", name: "Muse Spark 1.3", instanceId: "muse", model: "muse-spark-1.3", effort: muse },
+  { maker: "meta", name: "Muse Spark 1.3", instanceId: "muse", model: "muse-spark-1.3", effort: museSpark },
   { maker: "meta", name: "Muse Ember", instanceId: "muse", model: "muse-ember-1.0", effort: muse },
   { maker: "xai", name: "Grok 4.7", instanceId: "cursor", model: "grok-4.7", effort: cursor },
 ];
