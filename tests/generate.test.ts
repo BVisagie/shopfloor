@@ -125,7 +125,7 @@ describe("generateFiles", () => {
   it("asks agents to run modern-web-guidance without telemetry", () => {
     const { name, repo, when } = KNOWN_SKILLS.find((skill) => skill.name === "modern-web-guidance")!;
     expect(rules({ ...BLANK, skills: [{ name, repo, when }] })).toContain(
-      "- Use the `modern-web-guidance` skill when a change touches HTML, CSS or browser JavaScript, with DISABLE_TELEMETRY=1 before its npx commands.",
+      "- Use the `modern-web-guidance` skill when a change touches HTML, CSS or browser JavaScript, with DISABLE_TELEMETRY=1 before every command that runs its tool.",
     );
   });
 
