@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MODELS } from "../src/catalog";
+import { KNOWN_SKILLS, MODELS } from "../src/catalog";
 import { RULES_END, RULES_START, generateFiles, installTargets, needsRulesSkill, rules } from "../src/generate";
 import { installScript } from "../src/installScript";
 import { BLANK, STARTERS, refFor, type Recipe } from "../src/recipe";
@@ -120,6 +120,13 @@ describe("generateFiles", () => {
     const text = rules(starter("Professional"));
     expect(text).toContain("- Use the `ponytail` skill on every coding task.");
     expect(text).toContain("- Use the `unslop` skill when a change touches UI.");
+  });
+
+  it("asks agents to run modern-web-guidance without telemetry", () => {
+    const { name, repo, when } = KNOWN_SKILLS.find((skill) => skill.name === "modern-web-guidance")!;
+    expect(rules({ ...BLANK, skills: [{ name, repo, when }] })).toContain(
+      "- Use the `modern-web-guidance` skill when a change touches HTML, CSS or browser JavaScript, with DISABLE_TELEMETRY=1 before every command that runs its tool.",
+    );
   });
 
   it("keeps the rules far below the size at which agents cut a rules file off", () => {
