@@ -149,6 +149,15 @@ export const KNOWN_SKILLS: readonly KnownSkill[] = [
     group: "coding",
   },
   {
+    name: "modern-web-guidance",
+    repo: "https://github.com/GoogleChrome/modern-web-guidance",
+    // Its tool reports search queries to Google unless DISABLE_TELEMETRY is set, and has no other opt-out.
+    when: "when a change touches HTML, CSS or browser JavaScript, with DISABLE_TELEMETRY=1 before its npx commands",
+    about:
+      "Looks up current web platform guidance. Runs Google's tool with npx, which sends its search queries to Google. To stop that in every session, set DISABLE_TELEMETRY=1 in your shell profile.",
+    group: "coding",
+  },
+  {
     name: "file-pr",
     repo: TSTACK,
     when: "when you open a pull request",

@@ -39,6 +39,8 @@ A recipe can name skills that other people publish, such as ponytail or unslop. 
 - A skill can pass a megabyte, and the command stays a few kilobytes.
 - Each skill on the site links to its repository, so you can read it first.
 
+A skill can run tools of its own. modern-web-guidance runs Google's tool with `npx`, which sends its search queries to Google. Its rule asks agents to put `DISABLE_TELEMETRY=1` before those commands, but only sessions in T3 Code read that rule. To turn it off everywhere, add `export DISABLE_TELEMETRY=1` to your shell profile.
+
 With **Download the ones you are missing** switched on, the command fetches each of those skills from its own repository into the skills folders it installs to. It looks for a skill at `skills/<name>` in that repository, and tells you when it is not there. The switch starts on only when shopfloor lists every skill the recipe names. For a recipe with any other skill it starts off, so that nothing you have not read is downloaded. It never replaces a skill that is already there. For one project that means the project's own folder, so a skill you have machine-wide is still added there for the others who work in it. Switched off, it only tells you which ones are missing.
 
 Two jobs need no extra skill. The Build and Review steps do what tstack's `full-stop`, `full-send`, `council` and `sol-loop` do, with the models you chose, so those four are not offered. shopfloor's reviewers take turns instead of running at once.
