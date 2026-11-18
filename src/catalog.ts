@@ -75,6 +75,8 @@ const codex: Effort = {
   values: ["low", "medium", "high", "xhigh", "max"],
   default: "high",
 };
+/** GPT-6.2 adds ultra. */
+const codexUltra: Effort = { ...codex, values: [...codex.values, "ultra"] };
 const antigravity: Effort = { option: "thinking_level", values: ["low", "medium", "high"], default: "high" };
 const argon: Effort = { ...antigravity, values: ["minimal", "low", "medium", "high"] };
 const muse: Effort = {
@@ -98,6 +100,8 @@ export const MODELS: readonly CatalogModel[] = [
   { maker: "anthropic", name: "Opus 5.5", instanceId: "claudeAgent", model: "claude-opus-5-5", effort: claude },
   { maker: "anthropic", name: "Sonnet 5.5", instanceId: "claudeAgent", model: "claude-sonnet-5-5", effort: claude },
   { maker: "anthropic", name: "Haiku 5.5", instanceId: "claudeAgent", model: "claude-haiku-5-5", effort: claude },
+  { maker: "openai", name: "GPT-6.2 Sol", instanceId: "codex", model: "gpt-6.2-sol", effort: codexUltra },
+  { maker: "openai", name: "GPT-6.2 Astra", instanceId: "codex", model: "gpt-6.2-astra", effort: codexUltra },
   { maker: "openai", name: "GPT-6.1 Sol", instanceId: "codex", model: "gpt-6.1-sol", effort: codex },
   { maker: "openai", name: "GPT-6 Astra", instanceId: "codex", model: "gpt-6-astra", effort: codex },
   { maker: "openai", name: "GPT-6 Luna", instanceId: "codex", model: "gpt-6-luna", effort: codex },
