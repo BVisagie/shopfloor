@@ -108,6 +108,15 @@ describe("generateFiles", () => {
     expect(skill).toContain("at most 6 rounds in total");
   });
 
+  it.each(["gpt-6.2-sol", "gpt-6.2-astra"])("offers ultra effort on %s and writes it into the review target", (id) => {
+    const line = lineUp("claude-opus-5-5");
+    const recipe: Recipe = { ...line, phases: { ...line.phases, review: [refFor(model(id), "ultra")] } };
+    expect(model(id).effort?.values).toContain("ultra");
+    expect(file(recipe, "skills/shopfloor-review/SKILL.md")).toContain(
+      `{"providerInstanceId":"codex","model":"${id}","options":{"reasoningEffort":"ultra"}}`,
+    );
+  });
+
   it("words the subagent limit for none, one and several", () => {
     const withLimit = (maxSubagents: number) =>
       rules({ ...starter("Simple"), limits: { ...starter("Simple").limits, maxSubagents } });
